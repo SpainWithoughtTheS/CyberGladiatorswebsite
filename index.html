@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terminal</title>
+    <style>
+        body {
+            margin: 0;
+            overflow: hidden;
+            background-color: black;
+            font-family: 'Courier New', Courier, monospace;
+            color: #00ff00;
+        }
+        canvas {
+            display: block;
+        }
+        .overlay {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 24px;
+            color: cyan;
+            text-shadow: 0 0 10px cyan;
+        }
+        .terminal {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80%;
+            height: 250px;
+            background-color: #000;
+            color: #00ff00;
+            padding: 20px;
+            border-radius: 5px;
+            font-size: 16px;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+            overflow-y: scroll;
+            white-space: pre-wrap;
+            border: 2px solid #00ff00;
+        }
+        /* Custom Scrollbar */
+        .terminal::-webkit-scrollbar {
+            width: 8px;
+        }
+        .terminal::-webkit-scrollbar-track {
+            background: black;
+        }
+        .terminal::-webkit-scrollbar-thumb {
+            background: #00ff00;
+            border-radius: 5px;
+        }
+        .terminal input {
+            background: transparent;
+            border: none;
+            outline: none;
+            color: #00ff00;
+            width: 100%;
+            font-family: 'Courier New', Courier, monospace;
+        }
+    </style>
+</head>
+<body>
+    <div class="overlay">Welcome to the Cybergladiators Team</div>
+
+    <div class="terminal">
+        <div id="output">
+            <span>Welcome to the Cybergladiators Team</span><br>
+            <span>Type 'help' for available commands</span><br>
+        </div>
+        <input type="text" id="commandInput" placeholder="Enter command..." onkeydown="processCommand(event)">
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        // Three.js Setup
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer();
+        
+        renderer.setSize(window.innerWidth, window.innerHeight);
+        document.body.appendChild(renderer.domElement);
+
+        const geometry = new THREE.TorusKnotGeometry(10, 3, 100, 16);
+        const material = new THREE.MeshBasicMaterial({ color: 0x00ffff, wireframe: true });
+        const knot = new THREE.Mesh(geometry, material);
+        scene.add(knot);
+
+        camera.position.z = 30;
+
+        function animate() {
+            requestAnimationFrame(animate);
+            knot.rotation.x += 0.01;
+            knot.rotation.y += 0.01;
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        // Simulated File System
+        const filesystem = {
+            "/": {
+                "team": {
+                    "Anuj.txt": "Name: Anuj\nRole: Ubuntu Expert\nExperience: 1 year in cybersecurity.",
+                    "Kevin.txt": "Name: Kevin\nRole: Mint Expert\nExperience: 2 years in cybersecurity.",
+                    "Manan.txt": "Name: Manan\nRole: Windows Expert\nExperience: 1 year in cybersecurity.",
+                    "Ojizz.txt": "Name: Ojizz\nRole: Cisco Expert\nExperience: 2 years in cybersecurity.",
+                    "Newguy.txt": "Name: idk",
+                    
+                },
+                "projects": {
+                    "project1.txt": "Cybersecurity Club at school - Educating students on online safety.",
+                    "project2.txt": "Cyberpatriots"
+                }
+            }
+        };
+        let currentDir = filesystem["/"];
+
+        function processCommand(event) {
+            const commandInput = document.getElementById("commandInput");
+            const output = document.getElementById("output");
+
+            if (event.key === "Enter") {
+                let command = commandInput.value.trim();
+                commandInput.value = '';
+
+                if (command === "help") {
+                    output.innerHTML += "<span>Available commands: help, ls, pwd, cd [dir], cat [file], clear</span><br>";
+                } else if (command === "ls") {
+                    let items = Object.keys(currentDir);
+                    output.innerHTML += "<span>" + items.join("  ") + "</span><br>";
+                } else if (command === "pwd") {
+                    output.innerHTML += "<span>/home/cyberpunk</span><br>";
+                } else if (command.startsWith("cd ")) {
+                    let dir = command.split(" ")[1];
+                    if (currentDir[dir] && typeof currentDir[dir] === "object") {
+                        currentDir = currentDir[dir];
+                        output.innerHTML += `<span>Entered ${dir}</span><br>`;
+                    } else {
+                        output.innerHTML += `<span>Directory not found: ${dir}</span><br>`;
+                    }
+                } else if (command.startsWith("cat ")) {
+                    let file = command.split(" ")[1];
+                    if (currentDir[file]) {
+                        output.innerHTML += `<span>${currentDir[file]}</span><br>`;
+                    } else {
+                        output.innerHTML += `<span>File not found: ${file}</span><br>`;
+                    }
+                } else if (command === "clear") {
+                    output.innerHTML = "";
+                } else {
+                    output.innerHTML += "<span>Command not found: " + command + "</span><br>";
+                }
+
+                output.scrollTop = output.scrollHeight;
+            }
+        }
+    </script>
+</body>
+</html>
