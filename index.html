@@ -137,7 +137,7 @@
             }
         };
         let currentDir = filesystem["/"]["home"]["grey"];
-        let currentPath = "~";
+        let currentPath = "/home/grey";
         
         function processCommand(event) {
             const commandInput = document.getElementById("commandInput");
@@ -145,48 +145,60 @@
         
             if (event.key === "Enter") {
                 let command = commandInput.value.trim();
-                output.innerHTML += `<span class="prompt">grey@greyhats:${currentPath}$ ${command}</span><br>`;
+                output.innerHTML += `<span class="prompt">grey@greyhats:~$ ${command}</span><br>`;
                 commandInput.value = '';
         
                 if (command === "help") {
-                    output.innerHTML += "<span>Available commands: help, ls, pwd, cd [dir], cat [file], clear</span><br>";
+                    output.innerHTML += "<span>Available commands: help, ls, pwd, cd [dir], cat [file], clear</span><br><br>";
                 } else if (command === "ls") {
                     let items = Object.keys(currentDir);
-                    output.innerHTML += "<span>" + items.join("  ") + "</span><br>";
+                    output.innerHTML += "<span>" + items.join("  ") + "</span><br><br>";
                 } else if (command === "pwd") {
-                    output.innerHTML += `<span>${currentPath}</span><br>`;
+                    output.innerHTML += `<span>${currentPath}</span><br><br>`;
                 } else if (command.startsWith("cd ")) {
                     let dir = command.split(" ")[1];
                     if (dir === "..") {
-                        if (currentPath !== "~") {
-                            currentDir = filesystem["/"];
-                            currentPath = currentPath.split("/").slice(0, -1).join("/") || "~";
-                            output.innerHTML += "<span>Moved up one directory</span><br>";
+                        if (currentPath !== "/home/grey") {
+                            let pathParts = currentPath.split("/");
+                            pathParts.pop();
+                            currentPath = pathParts.join("/");
+                            currentDir = getDirectoryFromPath(currentPath);
+                            output.innerHTML += "<span>Moved up one directory</span><br><br>";
                         } else {
-                            output.innerHTML += "<span>Already at root directory</span><br>";
+                            output.innerHTML += "<span>Already at home directory</span><br><br>";
                         }
                     } else if (currentDir[dir] && typeof currentDir[dir] === "object") {
                         currentDir = currentDir[dir];
-                        currentPath = currentPath === "~" ? `~/${dir}` : `${currentPath}/${dir}`;
-                        output.innerHTML += `<span>Entered ${dir}</span><br>`;
+                        currentPath = currentPath === "/home/grey" ? `${currentPath}/${dir}` : `${currentPath}/${dir}`;
+                        output.innerHTML += `<span>Entered ${dir}</span><br><br>`;
                     } else {
-                        output.innerHTML += `<span>Directory not found: ${dir}</span><br>`;
+                        output.innerHTML += `<span>Directory not found: ${dir}</span><br><br>`;
                     }
                 } else if (command.startsWith("cat ")) {
                     let file = command.split(" ")[1];
                     if (currentDir[file] && typeof currentDir[file] === "string") {
-                        output.innerHTML += `<span>${currentDir[file]}</span><br>`;
+                        output.innerHTML += `<span>${currentDir[file]}</span><br><br>`;
                     } else {
-                        output.innerHTML += `<span>File not found: ${file}</span><br>`;
+                        output.innerHTML += `<span>File not found: ${file}</span><br><br>`;
                     }
                 } else if (command === "clear") {
                     output.innerHTML = "";
                 } else {
-                    output.innerHTML += `<span>Command not found: ${command}</span><br>`;
+                    output.innerHTML += `<span>Command not found: ${command}</span><br><br>`;
                 }
         
+                // Auto-scroll to the bottom
                 output.scrollTop = output.scrollHeight;
             }
+        }
+        
+        function getDirectoryFromPath(path) {
+            let dir = filesystem["/"];
+            let parts = path.split("/").filter(Boolean);
+            for (let part of parts) {
+                dir = dir[part];
+            }
+            return dir;
         }
     </script>
 </body>
