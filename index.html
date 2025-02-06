@@ -64,15 +64,19 @@
     </style>
 </head>
 <body>
-    <div class="overlay">Welcome to the Cybergladiators Team</div>
+    <div class="overlay">Welcome to the Grey Hats Team</div>
 
-    <div class="terminal">
+    <div id="terminal">
         <div id="output">
-            <span>Welcome to the Cybergladiators Team</span><br>
+            <span>Welcome to the Grey Hats Team</span><br>
             <span>Type 'help' for available commands</span><br>
         </div>
-        <input type="text" id="commandInput" placeholder="Enter command..." onkeydown="processCommand(event)">
+        <div id="input-line">
+            <span class="prompt">grey@greyhats:~$</span>
+            <input type="text" id="commandInput" autofocus onkeydown="processCommand(event)">
+        </div>
     </div>
+
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
     <script>
@@ -102,48 +106,62 @@
         // Simulated File System
         const filesystem = {
             "/": {
-                "team": {
-                    "Anuj.txt": "Name: Anuj\nRole: Ubuntu Expert\nExperience: 1 year in cybersecurity.",
-                    "Kevin.txt": "Name: Kevin\nRole: Mint Expert\nExperience: 2 years in cybersecurity.",
-                    "Manan.txt": "Name: Manan\nRole: Windows Expert\nExperience: 1 year in cybersecurity.",
-                    "Ojizz.txt": "Name: Ojizz\nRole: Cisco Expert\nExperience: 2 years in cybersecurity.",
-                    "Newguy.txt": "Name: idk",
-                    
-                },
-                "projects": {
-                    "project1.txt": "Cybersecurity Club at school - Educating students on online safety.",
-                    "project2.txt": "Cyberpatriots"
+                "home": {
+                    "grey": {
+                        "team": {
+                            "Anuj.txt": "Name: Anuj\nRole: Ubuntu Expert\nExperience: 1 year in cybersecurity.",
+                            "Kevin.txt": "Name: Kevin\nRole: Mint Expert\nExperience: 2 years in cybersecurity.",
+                            "Manan.txt": "Name: Manan\nRole: Windows Expert\nExperience: 1 year in cybersecurity.",
+                            "Ojizz.txt": "Name: Ojizz\nRole: Cisco Expert\nExperience: 2 years in cybersecurity.",
+                            "Newguy.txt": "Name: idk"
+                        },
+                        "projects": {
+                            "project1.txt": "Cybersecurity Club at school - Educating students on online safety.",
+                            "project2.txt": "Cyberpatriots"
+                        }
+                    }
                 }
             }
         };
-        let currentDir = filesystem["/"];
-
+        let currentDir = filesystem["/"]["home"]["grey"];
+        let currentPath = "~";
+        
         function processCommand(event) {
             const commandInput = document.getElementById("commandInput");
             const output = document.getElementById("output");
-
+        
             if (event.key === "Enter") {
                 let command = commandInput.value.trim();
+                output.innerHTML += `<span class="prompt">grey@greyhats:${currentPath}$ ${command}</span><br>`;
                 commandInput.value = '';
-
+        
                 if (command === "help") {
                     output.innerHTML += "<span>Available commands: help, ls, pwd, cd [dir], cat [file], clear</span><br>";
                 } else if (command === "ls") {
                     let items = Object.keys(currentDir);
                     output.innerHTML += "<span>" + items.join("  ") + "</span><br>";
                 } else if (command === "pwd") {
-                    output.innerHTML += "<span>/home/cyberpunk</span><br>";
+                    output.innerHTML += `<span>${currentPath}</span><br>`;
                 } else if (command.startsWith("cd ")) {
                     let dir = command.split(" ")[1];
-                    if (currentDir[dir] && typeof currentDir[dir] === "object") {
+                    if (dir === "..") {
+                        if (currentPath !== "~") {
+                            currentDir = filesystem["/"];
+                            currentPath = currentPath.split("/").slice(0, -1).join("/") || "~";
+                            output.innerHTML += "<span>Moved up one directory</span><br>";
+                        } else {
+                            output.innerHTML += "<span>Already at root directory</span><br>";
+                        }
+                    } else if (currentDir[dir] && typeof currentDir[dir] === "object") {
                         currentDir = currentDir[dir];
+                        currentPath = currentPath === "~" ? `~/${dir}` : `${currentPath}/${dir}`;
                         output.innerHTML += `<span>Entered ${dir}</span><br>`;
                     } else {
                         output.innerHTML += `<span>Directory not found: ${dir}</span><br>`;
                     }
                 } else if (command.startsWith("cat ")) {
                     let file = command.split(" ")[1];
-                    if (currentDir[file]) {
+                    if (currentDir[file] && typeof currentDir[file] === "string") {
                         output.innerHTML += `<span>${currentDir[file]}</span><br>`;
                     } else {
                         output.innerHTML += `<span>File not found: ${file}</span><br>`;
@@ -151,9 +169,9 @@
                 } else if (command === "clear") {
                     output.innerHTML = "";
                 } else {
-                    output.innerHTML += "<span>Command not found: " + command + "</span><br>";
+                    output.innerHTML += `<span>Command not found: ${command}</span><br>`;
                 }
-
+        
                 output.scrollTop = output.scrollHeight;
             }
         }
