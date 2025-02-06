@@ -186,10 +186,8 @@
                 } else {
                     output.innerHTML += `<span>Command not found: ${command}</span><br><br>`;
                 }
-        
-                // Auto-scroll to the bottom
-                output.scrollTop = output.scrollHeight;
             }
+            autoScroll();
         }
         
         function getDirectoryFromPath(path) {
@@ -200,6 +198,17 @@
             }
             return dir;
         }
+
+        function autoScroll() {
+            const terminal = document.querySelector('.terminal');
+            terminal.scrollTop = terminal.scrollHeight;
+        }
+
+        // select terminal
+        document.querySelector('.terminal').addEventListener('click', function() {
+            document.getElementById('commandInput').focus();
+        });
+
     </script>
 </body>
 </html>
