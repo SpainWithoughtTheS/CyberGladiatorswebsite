@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Terminal</title>
+    <title>Gray Hats Cyber</title>
     <style>
         body {
             margin: 0;
@@ -61,21 +61,34 @@
             width: 100%;
             font-family: 'Courier New', Courier, monospace;
         }
+
+        /* hopefully wont break anything */
+        #input-line {
+            display: flex;
+            align-items: center;
+        }
+        .prompt {
+            margin-right: 5px;
+        }
+        #commandInput {
+            flex-grow: 1;
+        }
     </style>
 </head>
 <body>
     <div class="overlay">Welcome to the Grey Hats Team</div>
 
-    <div id="terminal">
+    <div class="terminal">
         <div id="output">
             <span>Welcome to the Grey Hats Team</span><br>
             <span>Type 'help' for available commands</span><br>
         </div>
         <div id="input-line">
             <span class="prompt">grey@greyhats:~$</span>
-            <input type="text" id="commandInput" autofocus onkeydown="processCommand(event)">
+            <input type="text" id="commandInput" onkeydown="processCommand(event)">
         </div>
     </div>
+
 
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
