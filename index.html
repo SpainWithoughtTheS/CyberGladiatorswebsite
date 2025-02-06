@@ -31,8 +31,8 @@
             left: 50%;
             transform: translate(-50%, -50%);
             width: 80%;
-            height: 250px;
-            background-color: #000;
+            height: 300px; 
+            background-color: rgba(0, 0, 0, 0.9);
             color: #00ff00;
             padding: 20px;
             border-radius: 5px;
@@ -42,6 +42,7 @@
             white-space: pre-wrap;
             border: 2px solid #00ff00;
         }
+
         
         .terminal input {
             background: transparent;
@@ -139,12 +140,12 @@
                 commandInput.value = '';
         
                 if (command === "help") {
-                    output.innerHTML += "<span>Available commands: help, ls, pwd, cd [dir], cat [file], clear</span><br><br>";
+                    output.innerHTML += "<span>Available commands: help, ls, pwd, cd [dir], cat [file], clear</span><br>";
                 } else if (command === "ls") {
                     let items = Object.keys(currentDir);
-                    output.innerHTML += "<span>" + items.join("  ") + "</span><br><br>";
+                    output.innerHTML += "<span>" + items.join("  ") + "</span><br>";
                 } else if (command === "pwd") {
-                    output.innerHTML += `<span>${currentPath}</span><br><br>`;
+                    output.innerHTML += `<span>${currentPath}</span><br>`;
                 } else if (command.startsWith("cd ")) {
                     let dir = command.split(" ")[1];
                     if (dir === "..") {
@@ -153,28 +154,28 @@
                             pathParts.pop();
                             currentPath = pathParts.join("/");
                             currentDir = getDirectoryFromPath(currentPath);
-                            output.innerHTML += "<span>Moved up one directory</span><br><br>";
+                            output.innerHTML += "<span>Moved up one directory</span><br>";
                         } else {
-                            output.innerHTML += "<span>Already at home directory</span><br><br>";
+                            output.innerHTML += "<span>Already at home directory</span><br>";
                         }
                     } else if (currentDir[dir] && typeof currentDir[dir] === "object") {
                         currentDir = currentDir[dir];
                         currentPath = currentPath === "/home/grey" ? `${currentPath}/${dir}` : `${currentPath}/${dir}`;
                         output.innerHTML += `<span>Entered ${dir}</span><br><br>`;
                     } else {
-                        output.innerHTML += `<span>Directory not found: ${dir}</span><br><br>`;
+                        output.innerHTML += `<span>Directory not found: ${dir}</span><br>`;
                     }
                 } else if (command.startsWith("cat ")) {
                     let file = command.split(" ")[1];
                     if (currentDir[file] && typeof currentDir[file] === "string") {
-                        output.innerHTML += `<span>${currentDir[file]}</span><br><br>`;
+                        output.innerHTML += `<span>${currentDir[file]}</span><br>`;
                     } else {
-                        output.innerHTML += `<span>File not found: ${file}</span><br><br>`;
+                        output.innerHTML += `<span>File not found: ${file}</span><br>`;
                     }
                 } else if (command === "clear") {
                     output.innerHTML = "";
                 } else {
-                    output.innerHTML += `<span>Command not found: ${command}</span><br><br>`;
+                    output.innerHTML += `<span>Command not found: ${command}</span><br>`;
                 }
             }
             autoScroll();
