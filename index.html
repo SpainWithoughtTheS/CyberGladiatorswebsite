@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Gray Hats Cyber</title>
     <style>
+        
         body {
             margin: 0;
             overflow: hidden;
@@ -12,9 +13,11 @@
             font-family: 'Courier New', Courier, monospace;
             color: #00ff00;
         }
+        
         canvas {
             display: block;
         }
+        
         .overlay {
             position: absolute;
             top: 20px;
@@ -25,13 +28,14 @@
             color: cyan;
             text-shadow: 0 0 10px cyan;
         }
+        
         .terminal {
             position: absolute;
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
             width: 80%;
-            height: 300px; 
+            height: 300px;
             background-color: rgba(0, 0, 0, 0.9);
             color: #00ff00;
             padding: 20px;
@@ -42,28 +46,28 @@
             white-space: nowrap;
             border: 2px solid #00ff00;
         }
-
         
         .terminal input {
             background: transparent;
             border: none;
-            outline: none;
             color: #00ff00;
             width: 100%;
-            font-family: 'Courier New', Courier, monospace;
+            font: inherit;
         }
-
-        /* hopefully wont break anything */
+        
         #input-line {
             display: flex;
             align-items: center;
         }
+        
         .prompt {
             margin-right: 5px;
         }
+        
         #commandInput {
             flex-grow: 1;
         }
+
     </style>
 </head>
 <body>
