@@ -83,16 +83,16 @@
     });
 
     function togglePong() {
-        let canvas = document.getElementById("pongCanvas");
-        if (!pongActive) {
-            canvas.style.display = "block";
-            startPong();
-        } else {
-            canvas.style.display = "none";
-            stopPong();
-        }
-        pongActive = !pongActive;
+    let canvas = document.getElementById("pongCanvas");
+    if (pongActive) {
+        canvas.style.display = "none";  // Hide the canvas when deactivated
+        stopPong();
+    } else {
+        canvas.style.display = "block";  // Show the canvas when activated
+        startPong();
     }
+    pongActive = !pongActive;
+}
 
     function startPong() {
         const canvas = document.getElementById("pongCanvas");
